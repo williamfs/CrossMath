@@ -2,21 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class trigger : MonoBehaviour
+public class Trigger : MonoBehaviour
 {
     public float valueLookingFor;
     public bool correct;
-
-    void Start()
-    {
-        
-    }
-
-    
-    void Update()
-    {
-        
-    }
 
     void OnTriggerEnter2D(Collider2D other)
     {
@@ -33,7 +22,6 @@ public class trigger : MonoBehaviour
             Debug.Log("in");
             if (other.GetComponent<Drag>().draged == false)
             {
-                
                 Debug.Log("Mouse up");
                 other.transform.position = this.transform.position;
                 if(other.GetComponent<Block>().value == valueLookingFor)
