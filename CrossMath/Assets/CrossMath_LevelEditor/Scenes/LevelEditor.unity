@@ -201,7 +201,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 054542ae685a351479ae502a6005493c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseHoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   cellType: 0
   cellStatus: 0
   intCellContent: 0
@@ -310,7 +309,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4235861}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1765619486}
+        m_MethodName: SavePuzzle
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &4235861
@@ -439,7 +449,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 054542ae685a351479ae502a6005493c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseHoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   cellType: 0
   cellStatus: 0
   intCellContent: 0
@@ -548,7 +557,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 48730323}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1765619486}
+        m_MethodName: LoadFile
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &48730323
@@ -791,7 +811,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000015258816, y: 0}
+  m_AnchoredPosition: {x: 0.000015258789, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &207289931
@@ -1004,7 +1024,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 054542ae685a351479ae502a6005493c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseHoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   cellType: 0
   cellStatus: 0
   intCellContent: 0
@@ -1148,7 +1167,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000015258816, y: 0}
+  m_AnchoredPosition: {x: -0.000015258789, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &350220749
@@ -1227,7 +1246,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000015258816, y: 0}
+  m_AnchoredPosition: {x: 0.000015258789, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &361015465
@@ -1552,7 +1571,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000015258816, y: 0}
+  m_AnchoredPosition: {x: 0.000015258789, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &518655818
@@ -1686,7 +1705,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 054542ae685a351479ae502a6005493c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseHoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   cellType: 0
   cellStatus: 0
   intCellContent: 0
@@ -1751,7 +1769,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000045776447, y: 0}
+  m_AnchoredPosition: {x: -0.000045776367, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &555819214
@@ -1975,7 +1993,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000015258816, y: 0}
+  m_AnchoredPosition: {x: -0.000015258789, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &572107659
@@ -2726,7 +2744,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000030517633, y: 0}
+  m_AnchoredPosition: {x: 0.000030517578, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &793906877
@@ -2805,7 +2823,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000030517633, y: 0}
+  m_AnchoredPosition: {x: 0.000030517578, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &794646287
@@ -3064,7 +3082,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000030517633, y: 0}
+  m_AnchoredPosition: {x: 0.000030517578, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &855290207
@@ -3288,7 +3306,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 054542ae685a351479ae502a6005493c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseHoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   cellType: 0
   cellStatus: 0
   intCellContent: 0
@@ -3645,7 +3662,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 054542ae685a351479ae502a6005493c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseHoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   cellType: 0
   cellStatus: 0
   intCellContent: 0
@@ -3765,7 +3781,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 054542ae685a351479ae502a6005493c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseHoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   cellType: 0
   cellStatus: 0
   intCellContent: 0
@@ -3999,7 +4014,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000045776447, y: 0}
+  m_AnchoredPosition: {x: -0.000045776367, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1210408249
@@ -4078,7 +4093,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000015258816, y: 0}
+  m_AnchoredPosition: {x: -0.000015258789, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1247688316
@@ -4212,7 +4227,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 054542ae685a351479ae502a6005493c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseHoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   cellType: 0
   cellStatus: 0
   intCellContent: 0
@@ -4422,7 +4436,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 054542ae685a351479ae502a6005493c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseHoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   cellType: 0
   cellStatus: 0
   intCellContent: 0
@@ -4812,7 +4825,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 054542ae685a351479ae502a6005493c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseHoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   cellType: 0
   cellStatus: 0
   intCellContent: 0
@@ -4932,7 +4944,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 054542ae685a351479ae502a6005493c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseHoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   cellType: 0
   cellStatus: 0
   intCellContent: 0
@@ -4997,7 +5008,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000030517633, y: 0}
+  m_AnchoredPosition: {x: 0.000030517578, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1462034798
@@ -5131,7 +5142,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 054542ae685a351479ae502a6005493c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseHoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   cellType: 0
   cellStatus: 0
   intCellContent: 0
@@ -5251,7 +5261,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 054542ae685a351479ae502a6005493c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseHoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   cellType: 0
   cellStatus: 0
   intCellContent: 0
@@ -5316,7 +5325,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000045776447, y: 0}
+  m_AnchoredPosition: {x: -0.000045776367, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1562453610
@@ -5787,7 +5796,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 054542ae685a351479ae502a6005493c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseHoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   cellType: 0
   cellStatus: 0
   intCellContent: 0
@@ -5986,7 +5994,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 054542ae685a351479ae502a6005493c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseHoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   cellType: 0
   cellStatus: 0
   intCellContent: 0
@@ -6106,7 +6113,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 054542ae685a351479ae502a6005493c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseHoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   cellType: 0
   cellStatus: 0
   intCellContent: 0
@@ -6346,7 +6352,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -25.999992}
+  m_AnchoredPosition: {x: 0, y: -25.99997}
   m_SizeDelta: {x: -10, y: -62}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1696919990
@@ -6613,7 +6619,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000045776447, y: 0}
+  m_AnchoredPosition: {x: -0.000045776367, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1744132629
@@ -6701,6 +6707,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ddbcf66eb5466847b170af9ca59eb3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mouseHoverColor: {r: 0.9837489, g: 1, b: 0, a: 1}
+  numberBlockColor: {r: 0.9019608, g: 0.8352941, b: 1, a: 1}
+  operationBlockColor: {r: 1, g: 0.99215686, b: 0.7294118, a: 1}
+  hiddenBlockColor: {r: 0, g: 0.0074772835, b: 1, a: 1}
+  unusedBlockColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!1 &1817112941
 GameObject:
   m_ObjectHideFlags: 0
@@ -6825,7 +6836,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000015258816, y: 0}
+  m_AnchoredPosition: {x: 0.000015258789, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1885010208

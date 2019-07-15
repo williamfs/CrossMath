@@ -13,13 +13,10 @@ public class BuildingBlock : MonoBehaviour, IPointerClickHandler {
     }
 
     public EBuildingBlockType buildingBlockType;
-    private Color m_buildingBlockColor;
-    public Color BuildingBlockColor { get { return m_buildingBlockColor;  } }
     private Image m_imageReference;
 
     void Start() {
         m_imageReference = GetComponent<Image>();
-        m_buildingBlockColor = m_imageReference.color;
     }
 
     public void OnPointerClick(PointerEventData eventData) {
