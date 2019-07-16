@@ -14,9 +14,10 @@ public class GameManager : MonoBehaviour
 
     public bool check()
     {
-        foreach (Transform child in triggerHolder.GetComponentInChildren<Transform>())
+        foreach (Transform child in triggerHolder.GetComponentsInChildren<Transform>())
         {
-            if(child.GetComponent<Trigger>().correct == false)
+			Trigger trigger = child.GetComponent<Trigger>();
+            if(trigger.correct == false)
             {
                 Debug.Log("All false");
                 return false;

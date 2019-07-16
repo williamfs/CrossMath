@@ -370,6 +370,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CameraSpeed: 0.5
+  CameraMinX: -1.5
+  CameraMaxX: 1.5
+  CameraMinY: -1.5
+  CameraMaxY: 1.5
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -441,9 +445,9 @@ MonoBehaviour:
   perspectiveZoomSpeed: 0.5
   perspectiveZoomMinAngle: 0.1
   perspectiveZoomMaxAngle: 179.9
-  orthoZoomSpeed: 0.5
-  orthoSizeMin: 0.1
-  orthoSizeMax: 180
+  orthoZoomSpeed: 0.005
+  orthoSizeMin: 0.3
+  orthoSizeMax: 10
 --- !u!1 &656029283
 GameObject:
   m_ObjectHideFlags: 0
@@ -882,8 +886,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8db66d1d04cdd341b12183430d109e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  valueLookingFor: 2
-  correct: 0
 --- !u!61 &834995319
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -954,8 +956,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8db66d1d04cdd341b12183430d109e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  valueLookingFor: 7
-  correct: 0
 --- !u!61 &1143911734
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1026,8 +1026,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8db66d1d04cdd341b12183430d109e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  valueLookingFor: 4
-  correct: 0
 --- !u!61 &1169171165
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1964,8 +1962,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8db66d1d04cdd341b12183430d109e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  valueLookingFor: 3
-  correct: 0
 --- !u!1 &1862357931
 GameObject:
   m_ObjectHideFlags: 0
@@ -2235,8 +2231,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8db66d1d04cdd341b12183430d109e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  valueLookingFor: 5
-  correct: 0
 --- !u!61 &2127305710
 BoxCollider2D:
   m_ObjectHideFlags: 0
