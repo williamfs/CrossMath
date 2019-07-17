@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OperationBlock : BuildingBlock {
-    public char operationCharacter;
+namespace LevelEditor {
+    public class OperationBlock : BuildingBlock {
+        public char operationCharacter;
 
-    private void OnValidate() {
-        buildingBlockType = EBuildingBlockType.Operation;
+        private void OnValidate() {
+            buildingBlockType = EBuildingBlockType.Operation;
+        }
     }
 }

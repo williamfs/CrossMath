@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NumberBlock : BuildingBlock {
-    public int numberValue;
+namespace LevelEditor {
+    public class NumberBlock : BuildingBlock {
+        public int numberValue;
 
-    private void OnValidate() {
-        buildingBlockType = EBuildingBlockType.Number;
+        private void OnValidate() {
+            buildingBlockType = EBuildingBlockType.Number;
+        }
     }
 }

@@ -6707,11 +6707,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ddbcf66eb5466847b170af9ca59eb3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseHoverColor: {r: 0.9837489, g: 1, b: 0, a: 1}
-  numberBlockColor: {r: 0.9019608, g: 0.8352941, b: 1, a: 1}
-  operationBlockColor: {r: 1, g: 0.99215686, b: 0.7294118, a: 1}
-  hiddenBlockColor: {r: 0, g: 0.0074772835, b: 1, a: 1}
-  unusedBlockColor: {r: 1, g: 0, b: 0, a: 1}
+  colorConfiguration: {fileID: 11400000, guid: 7bad14f1ddce86d4382504021adfe8e5, type: 2}
 --- !u!1 &1817112941
 GameObject:
   m_ObjectHideFlags: 0
