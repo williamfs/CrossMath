@@ -2,14 +2,22 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace LevelEditor {
     public class LevelEditor : MonoBehaviour {
         public static LevelEditor instance;
-        
+
+        [Header("Level Editor Configuration")]
         public ColorConfiguration colorConfiguration;
+        public GameObject gridObject;
+        public GameObject singleCellPrefab;
+
+        [Header("Board Generation")]
+        public GameObject generateBoardPanel;
 
         private BuildingBlock m_currentlySelectedBuildingBlock;
+        private List<CellScript> m_cellList;
 
         private void Awake() {
             if(instance == null) {
@@ -17,6 +25,8 @@ namespace LevelEditor {
             } else {
                 Destroy(gameObject);
             }
+
+            generateBoardPanel.SetActive(false);
         }
 
         public void SelectBuildingBlock(BuildingBlock _selected) {
@@ -31,17 +41,66 @@ namespace LevelEditor {
             return (m_currentlySelectedBuildingBlock != null);
         }
 
-        // --------------------------------------------------------------------
+        // -----------------------
+        // Board Generation
+        // -----------------------
+        #region BOARD GENERATION
+
+        public void ShowGenerateBoardPanel() {
+            generateBoardPanel.SetActive(true);
+        }
+
+        public void HideGenerateBoardPanel() {
+            generateBoardPanel.SetActive(false);
+        }
+
+        public void GenerateEmptyBoard(InputField _inputField) {
+            int boardSize = int.Parse(_inputField.textComponent.text);
+            GenerateEmptyBoard(boardSize);
+            generateBoardPanel.SetActive(false);
+        }
+
+        public void GenerateEmptyBoard(int _size) {
+            DestroyAllChildren(gridObject.transform);
+
+            m_cellList = new List<CellScript>();
+            GridLayoutGroup gridLayoutGroup = gridObject.GetComponent<GridLayoutGroup>();
+            gridLayoutGroup.constraintCount = _size;
+
+            for(int i = 0; i < (_size * _size); i++) {
+                CellScript cell = Instantiate(singleCellPrefab, gridObject.transform).GetComponent<CellScript>();
+                cell.InitializeEmptyCell();
+                m_cellList.Add(cell);
+            }
+        }
+
+        public void GenerateBoard(SerializableBoard _board) {
+            m_cellList = new List<CellScript>();
+            GridLayoutGroup gridLayoutGroup = gridObject.GetComponent<GridLayoutGroup>();
+            gridLayoutGroup.constraintCount = _board.boardSize;
+
+            for(int i = 0; i < (_board.boardSize * _board.boardSize); i++) {
+                // Instantiating Cell
+                CellScript instantiatedCell = Instantiate(singleCellPrefab, gridObject.transform).GetComponent<CellScript>();
+                instantiatedCell.FetchDependencies();
+                instantiatedCell.CopyFrom(_board.serializableGrid[i]);
+                instantiatedCell.UpdateUI();
+                m_cellList.Add(instantiatedCell);
+            }
+        }
+        #endregion BOARD GENERATION
+
+        // -----------------------
         // Save and Load Functions
-        //
+        // -----------------------
+        #region SAVE AND LOAD
         public void SavePuzzle() {
             SerializableBoard savedBoard = new SerializableBoard();
-            CellScript[] allCells = FindObjectsOfType<CellScript>();
             List<SerializableCell> cellList = new List<SerializableCell>();
 
-            savedBoard.boardSize = Mathf.RoundToInt(Mathf.Sqrt(allCells.Length));
+            savedBoard.boardSize = Mathf.RoundToInt(Mathf.Sqrt(m_cellList.Count));
 
-            foreach (CellScript cell in allCells) {
+            foreach (CellScript cell in m_cellList) {
                 if(cell.cellType == CellScript.ECellType.None && cell.cellStatus == CellScript.ECellStatus.None) {
                     cell.cellType = CellScript.ECellType.Unused;
                     cell.cellStatus = CellScript.ECellStatus.Unused;
@@ -70,36 +129,19 @@ namespace LevelEditor {
             string filePath = Application.dataPath + "/Levels/level.json";
             string jsonData = File.ReadAllText(filePath);
             SerializableBoard board = JsonUtility.FromJson<SerializableBoard>(jsonData);
-
-            Debug.Log($"Loaded board of size {board.boardSize} with {board.serializableGrid.Length} cells");
             DeserializeBoard(board);
         }
 
         private void DeserializeBoard(SerializableBoard _board) {
-            CellScript[] allCells = FindObjectsOfType<CellScript>();
-            for(int i = 0; i < allCells.Length; i++) {
-                CellScript.ECellType cellType = (CellScript.ECellType)_board.serializableGrid[i].cellType;
-                CellScript.ECellStatus cellStatus = (CellScript.ECellStatus)_board.serializableGrid[i].cellStatus;
-                allCells[i].cellType = cellType;
-                allCells[i].cellStatus = cellStatus;
+            DestroyAllChildren(gridObject.transform);
+            GenerateBoard(_board);
+        }
 
-                if(cellType == CellScript.ECellType.Number) {
-                    allCells[i].intCellContent = int.Parse(_board.serializableGrid[i].cellContent);
-                    allCells[i].CurrentColor = colorConfiguration.numberBlockColor;
-                } else if(cellType == CellScript.ECellType.Operation) {
-                    allCells[i].charCellContent = _board.serializableGrid[i].cellContent.ToCharArray()[0];
-                    allCells[i].CurrentColor = colorConfiguration.operationBlockColor;
-                } else {
-                    allCells[i].CurrentColor = colorConfiguration.unusedBlockColor;
-                }
-
-                if(cellStatus == CellScript.ECellStatus.Hidden) {
-                    allCells[i].PreviousColor = allCells[i].CurrentColor;
-                    allCells[i].CurrentColor = colorConfiguration.hiddenBlockColor;
-                }
-
-                allCells[i].UpdateUI();
+        private void DestroyAllChildren(Transform _parent) {
+            for(int i = 0; i < _parent.childCount; i++) {
+                Destroy(_parent.GetChild(i).gameObject);
             }
         }
+        #endregion SAVE AND LOAD
     }
 }

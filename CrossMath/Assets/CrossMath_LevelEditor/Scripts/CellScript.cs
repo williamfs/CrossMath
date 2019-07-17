@@ -7,29 +7,6 @@ using UnityEngine.UI;
 namespace LevelEditor {
     [RequireComponent(typeof(BoxCollider2D))]
     public class CellScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
-        [Header("Cell Configuration")]
-        private Color m_currentColor = Color.white;
-        public Color CurrentColor {
-            get {
-                return m_currentColor;
-            }
-            set {
-                m_currentColor = value;
-            }
-        }
-        private Color m_previousColor;
-        public Color PreviousColor {
-            get {
-                return m_previousColor;
-            }
-            set {
-                m_previousColor = value;
-            }
-        }
-
-        private Image m_imageReference;
-        private Text m_textReference;
-
         public enum ECellType {
             None = 0,
             Number = 1,
@@ -44,17 +21,44 @@ namespace LevelEditor {
             Unused = 3
         }
 
+        private Color m_currentColor = Color.white;
+        public Color CurrentColor {
+            get {
+                return m_currentColor;
+            }
+            set {
+                m_currentColor = value;
+            }
+        }
+
+        private Color m_previousColor;
+        public Color PreviousColor {
+            get {
+                return m_previousColor;
+            }
+            set {
+                m_previousColor = value;
+            }
+        }
+
         public ECellType cellType;
         public ECellStatus cellStatus;
         public int intCellContent;
         public char charCellContent;
 
-        void Start() {
-            m_imageReference = GetComponent<Image>();
-            m_textReference = GetComponentInChildren<Text>();
+        // Private Members
+        private Image m_imageReference;
+        private Text m_textReference;
 
+        public void InitializeEmptyCell() {
             cellType = ECellType.None;
             cellStatus = ECellStatus.None;
+            FetchDependencies();
+        }
+
+        public void FetchDependencies() {
+            m_imageReference = GetComponent<Image>();
+            m_textReference = GetComponentInChildren<Text>();
             m_textReference.text = "";
         }
 
@@ -74,6 +78,27 @@ namespace LevelEditor {
             }
 
             m_imageReference.color = m_currentColor;
+        }
+
+        public void CopyFrom(SerializableCell _cell) {
+           
+            cellStatus = (ECellStatus)_cell.cellStatus;
+            cellType = (ECellType)_cell.cellType;
+
+            if (cellType == CellScript.ECellType.Number) {
+                intCellContent = int.Parse(_cell.cellContent);
+                m_currentColor = LevelEditor.instance.colorConfiguration.numberBlockColor;
+            } else if (cellType == CellScript.ECellType.Operation) {
+                charCellContent = _cell.cellContent.ToCharArray()[0];
+                CurrentColor = LevelEditor.instance.colorConfiguration.operationBlockColor;
+            } else {
+                CurrentColor = LevelEditor.instance.colorConfiguration.unusedBlockColor;
+            }
+
+            if (cellStatus == CellScript.ECellStatus.Hidden) {
+                PreviousColor = CurrentColor;
+                CurrentColor = LevelEditor.instance.colorConfiguration.hiddenBlockColor;
+            }
         }
 
         public void OnPointerClick(PointerEventData eventData) {
