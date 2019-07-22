@@ -75,6 +75,8 @@ namespace LevelEditor {
                 m_textReference.text = intCellContent.ToString();
             } else if(cellType == ECellType.Operation) {
                 m_textReference.text = charCellContent.ToString();
+            } else {
+                m_textReference.text = "";
             }
 
             m_imageReference.color = m_currentColor;
@@ -103,6 +105,7 @@ namespace LevelEditor {
 
         public void OnPointerClick(PointerEventData eventData) {
             if(LevelEditor.instance.HasBuildingBlockSelected()) {
+                LevelEditor.instance.AddToActionStack(this);
                 BuildingBlock currentlySelected = LevelEditor.instance.GetCurrentBuildingBlock();
 
                 switch(currentlySelected.buildingBlockType) {

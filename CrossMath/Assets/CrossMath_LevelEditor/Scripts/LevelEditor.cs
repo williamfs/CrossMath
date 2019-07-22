@@ -6,6 +6,11 @@ using UnityEngine.UI;
 
 namespace LevelEditor {
     public class LevelEditor : MonoBehaviour {
+        public class BoardAction {
+            public int cellListPosition;
+            public SerializableCell currentCellStatus;
+        }
+
         public static LevelEditor instance;
 
         [Header("Level Editor Configuration")]
@@ -32,8 +37,10 @@ namespace LevelEditor {
 
         // Loading
 
+        // Internal Variables
         private BuildingBlock m_currentlySelectedBuildingBlock;
         private List<CellScript> m_cellList;
+        private Stack<BoardAction> m_actionStack;
 
         private void Awake() {
             if(instance == null) {
@@ -85,8 +92,7 @@ namespace LevelEditor {
 
         public void GenerateEmptyBoard(int _size) {
             DestroyAllChildren(gridObject.transform);
-
-            m_cellList = new List<CellScript>();
+            InitializeDependencies();
             GridLayoutGroup gridLayoutGroup = gridObject.GetComponent<GridLayoutGroup>();
             gridLayoutGroup.constraintCount = _size;
 
@@ -97,8 +103,13 @@ namespace LevelEditor {
             }
         }
 
-        public void GenerateBoard(SerializableBoard _board) {
+        public void InitializeDependencies() {
             m_cellList = new List<CellScript>();
+            m_actionStack = new Stack<BoardAction>();
+        }
+
+        public void GenerateBoard(SerializableBoard _board) {
+            InitializeDependencies();
             GridLayoutGroup gridLayoutGroup = gridObject.GetComponent<GridLayoutGroup>();
             gridLayoutGroup.constraintCount = _board.boardSize;
 
@@ -151,23 +162,27 @@ namespace LevelEditor {
             savedBoard.boardSize = Mathf.RoundToInt(Mathf.Sqrt(m_cellList.Count));
 
             foreach (CellScript cell in m_cellList) {
-                if(cell.cellType == CellScript.ECellType.None && cell.cellStatus == CellScript.ECellStatus.None) {
-                    cell.cellType = CellScript.ECellType.Unused;
-                    cell.cellStatus = CellScript.ECellStatus.Unused;
-                }
-
-                string content = "";
-                if(cell.cellType == CellScript.ECellType.Number) {
-                    content = cell.intCellContent.ToString();
-                } else if(cell.cellType == CellScript.ECellType.Operation) {
-                    content = cell.charCellContent.ToString();
-                }
-
-                cellList.Add(new SerializableCell(cell.cellStatus.GetHashCode(), cell.cellType.GetHashCode(), content));
+                cellList.Add(GetSerializableCellFromCellScript(cell));
             }
 
             savedBoard.serializableGrid = cellList.ToArray();
             SaveFile(_filename, JsonUtility.ToJson(savedBoard));
+        }
+
+        public SerializableCell GetSerializableCellFromCellScript(CellScript _cellScript) {
+            if (_cellScript.cellType == CellScript.ECellType.None && _cellScript.cellStatus == CellScript.ECellStatus.None) {
+                _cellScript.cellType = CellScript.ECellType.Unused;
+                _cellScript.cellStatus = CellScript.ECellStatus.Unused;
+            }
+
+            string content = "";
+            if (_cellScript.cellType == CellScript.ECellType.Number) {
+                content = _cellScript.intCellContent.ToString();
+            } else if (_cellScript.cellType == CellScript.ECellType.Operation) {
+                content = _cellScript.charCellContent.ToString();
+            }
+
+            return new SerializableCell(_cellScript.cellStatus.GetHashCode(), _cellScript.cellType.GetHashCode(), content);
         }
 
         public void SaveFile(string _filename, string _jsonFile) {
@@ -213,5 +228,30 @@ namespace LevelEditor {
             }
         }
         #endregion SAVE AND LOAD
+
+        #region UNDO
+        public void AddToActionStack(CellScript _cell) {
+            BoardAction boardAction = new BoardAction();
+
+            // finding where the cell is on the list
+            int index = m_cellList.FindIndex(cell => {
+                return cell == _cell;
+            });
+            boardAction.cellListPosition = index;
+            boardAction.currentCellStatus = GetSerializableCellFromCellScript(_cell);
+
+            m_actionStack.Push(boardAction);
+        }
+
+        public void Undo() {
+            if(m_actionStack.Count == 0) {
+                return;
+            }
+
+            BoardAction lastAction = m_actionStack.Pop();
+            m_cellList[lastAction.cellListPosition].CopyFrom(lastAction.currentCellStatus);
+            m_cellList[lastAction.cellListPosition].UpdateUI();
+        }
+        #endregion UNDO
     }
 }
