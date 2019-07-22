@@ -16,6 +16,22 @@ namespace LevelEditor {
         [Header("Board Generation")]
         public GameObject generateBoardPanel;
 
+        [Header("Save")]
+        public GameObject saveBoardPanel;
+        public GameObject boardSavedPanel;
+        public GameObject overrideFilePanel;
+
+        [Header("Load")]
+        public GameObject loadBoardPanel;
+
+        // Saving
+        private const string km_preprendPath = "/Levels";
+        // Caching Save
+        private string m_cachedFilename;
+
+
+        // Loading
+
         private BuildingBlock m_currentlySelectedBuildingBlock;
         private List<CellScript> m_cellList;
 
@@ -26,7 +42,14 @@ namespace LevelEditor {
                 Destroy(gameObject);
             }
 
-            generateBoardPanel.SetActive(false);
+            // Desactivating all Save related panels
+            generateBoardPanel?.SetActive(false);
+            saveBoardPanel?.SetActive(false);
+            boardSavedPanel?.SetActive(false);
+            overrideFilePanel?.SetActive(false);
+
+            // Desactivating all Load related panels.
+            // loadBoardPanel?.SetActive(false);
         }
 
         public void SelectBuildingBlock(BuildingBlock _selected) {
@@ -91,10 +114,37 @@ namespace LevelEditor {
         #endregion BOARD GENERATION
 
         // -----------------------
-        // Save and Load Functions
+        // Save Functions
         // -----------------------
         #region SAVE AND LOAD
-        public void SavePuzzle() {
+
+        public void PromptSavePanel() {
+            saveBoardPanel?.SetActive(true);
+        }
+
+        public void CloseSavePanel() {
+            saveBoardPanel?.SetActive(false);
+        }
+
+        public void SaveBoard(InputField _inputField) {
+            string filename = _inputField.textComponent.text;
+
+            // Making sure it has the json extension
+            if(!filename.Contains(".json")) {
+                filename += ".json";
+            }
+
+            // Check if such file doesn't exist
+            Debug.Log($"Checking {Application.dataPath}{km_preprendPath}/{filename}");
+            if(System.IO.File.Exists($"{Application.dataPath}{km_preprendPath}/{filename}")) {
+                m_cachedFilename = filename;
+                overrideFilePanel?.SetActive(true);
+            } else {
+                SavePuzzle(filename);
+            }
+        }
+
+        public void SavePuzzle(string _filename) {
             SerializableBoard savedBoard = new SerializableBoard();
             List<SerializableCell> cellList = new List<SerializableCell>();
 
@@ -117,14 +167,34 @@ namespace LevelEditor {
             }
 
             savedBoard.serializableGrid = cellList.ToArray();
-            SaveFile(JsonUtility.ToJson(savedBoard));
+            SaveFile(_filename, JsonUtility.ToJson(savedBoard));
         }
 
-        public void SaveFile(string _jsonFile) {
-            Debug.Log($"Saving File: {_jsonFile}");
-            File.WriteAllText(Application.dataPath + "/Levels/level.json", _jsonFile);
+        public void SaveFile(string _filename, string _jsonFile) {
+            File.WriteAllText($"{Application.dataPath}{km_preprendPath}/{_filename}", _jsonFile);
+            boardSavedPanel?.SetActive(true);
         }
 
+        // Called by the UI by the panel that shows feedback when a file was saved...
+        public void CloseBoardSavedPanel() {
+            saveBoardPanel?.SetActive(false);
+            boardSavedPanel?.SetActive(false);
+        }
+
+        // Called by the UI when the user clicks "Yes" to override a save file
+        public void OverrideSaveFile() {
+            overrideFilePanel?.SetActive(false);
+            SavePuzzle(m_cachedFilename);
+        }
+
+        // Called by the UI when the user clicks "No" to override a save file
+        public void DontOverrideSaveFile() {
+            overrideFilePanel?.SetActive(false);
+        }
+
+        // -----------------------
+        // LOAD Functions
+        // -----------------------
         public void LoadFile() {
             string filePath = Application.dataPath + "/Levels/level.json";
             string jsonData = File.ReadAllText(filePath);
