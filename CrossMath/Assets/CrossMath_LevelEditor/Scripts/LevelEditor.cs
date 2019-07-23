@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -31,6 +32,8 @@ namespace LevelEditor {
 
         [Header("Load")]
         public GameObject loadBoardPanel;
+        public GameObject availableFilesParent;
+        public GameObject textPrefab;
 
         // Saving
         private const string km_preprendPath = "/Levels";
@@ -59,7 +62,7 @@ namespace LevelEditor {
             overrideFilePanel?.SetActive(false);
 
             // Desactivating all Load related panels.
-            // loadBoardPanel?.SetActive(false);
+            loadBoardPanel?.SetActive(false);
 
             // Initializing Feedback Section
             currentlySelectedBuildingBlock.InitializeEmptyCell();
@@ -218,11 +221,39 @@ namespace LevelEditor {
         // -----------------------
         // LOAD Functions
         // -----------------------
-        public void LoadFile() {
-            string filePath = Application.dataPath + "/Levels/level.json";
+        public void ShowLoadFilePanel() {
+            loadBoardPanel?.SetActive(true);
+
+            // Showing Available Files to Load...
+            DestroyAllChildren(availableFilesParent.transform);
+            // getting available files
+            string[] filesAvailable = Directory.GetFiles($"{Application.dataPath}{km_preprendPath}");
+            string[] validFiles = filesAvailable.Where(filename => {
+                return (filename.Contains(".json") && !filename.Contains(".meta"));
+            }).ToArray();
+
+            foreach (string validFile in validFiles) {
+                Text filenameText = Instantiate(textPrefab, availableFilesParent.transform).GetComponent<Text>();
+                filenameText.text = validFile.Split('/', '\\').Last();
+            }
+        }
+
+        public void HideLoadFilePanel() {
+            loadBoardPanel?.SetActive(false);
+        }
+
+        public void LoadFile(InputField _inputField) {
+            string fileName = _inputField.textComponent.text;
+
+            if(!fileName.Contains(".json")) {
+                fileName += ".json";
+            }
+
+            string filePath = $"{Application.dataPath}{km_preprendPath}/{fileName}";
             string jsonData = File.ReadAllText(filePath);
             SerializableBoard board = JsonUtility.FromJson<SerializableBoard>(jsonData);
             DeserializeBoard(board);
+            HideLoadFilePanel();
         }
 
         private void DeserializeBoard(SerializableBoard _board) {
