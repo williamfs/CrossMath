@@ -18,6 +18,9 @@ namespace LevelEditor {
         public GameObject gridObject;
         public GameObject singleCellPrefab;
 
+        [Header("Level Editor Feedback Section")]
+        public CellScript currentlySelectedBuildingBlock;
+
         [Header("Board Generation")]
         public GameObject generateBoardPanel;
 
@@ -57,10 +60,15 @@ namespace LevelEditor {
 
             // Desactivating all Load related panels.
             // loadBoardPanel?.SetActive(false);
+
+            // Initializing Feedback Section
+            currentlySelectedBuildingBlock.InitializeEmptyCell();
         }
 
         public void SelectBuildingBlock(BuildingBlock _selected) {
             m_currentlySelectedBuildingBlock = _selected;
+            currentlySelectedBuildingBlock.AssignBuildingBlock(_selected, true);
+            currentlySelectedBuildingBlock.UpdateUI();
         }
 
         public BuildingBlock GetCurrentBuildingBlock() {

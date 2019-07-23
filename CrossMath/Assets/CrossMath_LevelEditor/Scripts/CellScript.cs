@@ -107,54 +107,66 @@ namespace LevelEditor {
             if(LevelEditor.instance.HasBuildingBlockSelected()) {
                 LevelEditor.instance.AddToActionStack(this);
                 BuildingBlock currentlySelected = LevelEditor.instance.GetCurrentBuildingBlock();
-
-                switch(currentlySelected.buildingBlockType) {
-                    case BuildingBlock.EBuildingBlockType.Number:
-                        cellType = ECellType.Number;
-                        cellStatus = ECellStatus.Visible;
-
-                        NumberBlock block = (NumberBlock)currentlySelected;
-                        m_textReference.text = block.numberValue.ToString();
-                        intCellContent = block.numberValue;
-                        m_currentColor = LevelEditor.instance.colorConfiguration.numberBlockColor;
-                        break;
-                    case BuildingBlock.EBuildingBlockType.Operation:
-                        cellType = ECellType.Operation;
-                        cellStatus = ECellStatus.Visible;
-
-                        OperationBlock opBlock = (OperationBlock)currentlySelected;
-                        m_textReference.text = opBlock.operationCharacter.ToString();
-                        charCellContent = opBlock.operationCharacter;
-                        m_currentColor = LevelEditor.instance.colorConfiguration.operationBlockColor;
-                        break;
-                    case BuildingBlock.EBuildingBlockType.Hide:
-
-                        if(cellStatus == ECellStatus.Hidden) {
-                            cellStatus = ECellStatus.Visible;
-
-                            // current color is now previous color
-                            // and previous color is now current color
-                            Color tempColor = m_currentColor;
-                            m_currentColor = m_previousColor;
-                            m_previousColor = tempColor;
-                        } else if(cellStatus == ECellStatus.Visible) {
-                            cellStatus = ECellStatus.Hidden;
-
-                            m_previousColor = m_currentColor;
-                            m_currentColor = LevelEditor.instance.colorConfiguration.hiddenBlockColor;
-                        }
-                        break;
-                    case BuildingBlock.EBuildingBlockType.Unused:
-                        cellType = ECellType.Unused;
-                        cellStatus = ECellStatus.Unused;
-
-                        m_textReference.text = "";
-                        m_currentColor = LevelEditor.instance.colorConfiguration.unusedBlockColor;
-                        break;
-                }
-
-                m_imageReference.color = m_currentColor;
+                AssignBuildingBlock(currentlySelected, false);
             }
+        }
+
+        public void AssignBuildingBlock(BuildingBlock _block, bool _isFeedback) {
+            switch (_block.buildingBlockType) {
+                case BuildingBlock.EBuildingBlockType.Number:
+                    cellType = ECellType.Number;
+                    cellStatus = ECellStatus.Visible;
+
+                    NumberBlock block = (NumberBlock)_block;
+                    m_textReference.text = block.numberValue.ToString();
+                    intCellContent = block.numberValue;
+                    m_currentColor = LevelEditor.instance.colorConfiguration.numberBlockColor;
+                    break;
+                case BuildingBlock.EBuildingBlockType.Operation:
+                    cellType = ECellType.Operation;
+                    cellStatus = ECellStatus.Visible;
+
+                    OperationBlock opBlock = (OperationBlock)_block;
+                    m_textReference.text = opBlock.operationCharacter.ToString();
+                    charCellContent = opBlock.operationCharacter;
+                    m_currentColor = LevelEditor.instance.colorConfiguration.operationBlockColor;
+                    break;
+                case BuildingBlock.EBuildingBlockType.Hide:
+
+                    if (cellStatus == ECellStatus.Hidden) {
+                        cellStatus = ECellStatus.Visible;
+
+                        // current color is now previous color
+                        // and previous color is now current color
+                        Color tempColor = m_currentColor;
+                        m_currentColor = m_previousColor;
+                        m_previousColor = tempColor;
+                    } else if (cellStatus == ECellStatus.Visible) {
+                        cellStatus = ECellStatus.Hidden;
+
+                        m_previousColor = m_currentColor;
+                        m_currentColor = LevelEditor.instance.colorConfiguration.hiddenBlockColor;
+                    }
+
+
+                    // just overriding what happened and making the cell blue if it's the feedback cell
+                    if(_isFeedback) {
+                        m_currentColor = LevelEditor.instance.colorConfiguration.hiddenBlockColor;
+                        m_textReference.text = "";
+                        cellStatus = ECellStatus.Hidden;
+                        cellType = ECellType.None;
+                    }
+                    break;
+                case BuildingBlock.EBuildingBlockType.Unused:
+                    cellType = ECellType.Unused;
+                    cellStatus = ECellStatus.Unused;
+
+                    m_textReference.text = "";
+                    m_currentColor = LevelEditor.instance.colorConfiguration.unusedBlockColor;
+                    break;
+            }
+
+            m_imageReference.color = m_currentColor;
         }
     }
 }
