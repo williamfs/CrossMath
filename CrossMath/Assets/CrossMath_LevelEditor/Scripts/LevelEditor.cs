@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 namespace LevelEditor {
     public class LevelEditor : MonoBehaviour {
@@ -48,6 +49,10 @@ namespace LevelEditor {
         private List<CellScript> m_cellList;
         private Stack<BoardAction> m_actionStack;
 
+        // Board Manipulation
+        private int m_cellSize = 75;
+        private Vector3 previousFrameMousePosition;
+
         private void Awake() {
             if(instance == null) {
                 instance = this;
@@ -66,6 +71,27 @@ namespace LevelEditor {
 
             // Initializing Feedback Section
             currentlySelectedBuildingBlock.InitializeEmptyCell();
+        }
+
+        private void Update() {
+            if(Input.mouseScrollDelta != Vector2.zero) {
+                ChangeGridCellSize(Input.mouseScrollDelta);
+            }
+
+            if(Input.GetMouseButton(1) || Input.GetMouseButton(2)) {
+                ProcessGridPosition(Input.mousePosition - previousFrameMousePosition);
+            }
+
+            previousFrameMousePosition = Input.mousePosition;
+        }
+
+        private void ChangeGridCellSize(Vector2 _variation) {
+            GridLayoutGroup layoutGroup = gridObject.GetComponent<GridLayoutGroup>();
+            layoutGroup.cellSize = layoutGroup.cellSize + new Vector2(_variation.y, _variation.y);
+        }
+
+        private void ProcessGridPosition(Vector2 _deltaMovement) {
+            gridObject.transform.Translate(_deltaMovement);
         }
 
         public void SelectBuildingBlock(BuildingBlock _selected) {

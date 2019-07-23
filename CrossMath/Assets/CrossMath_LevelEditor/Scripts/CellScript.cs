@@ -104,6 +104,10 @@ namespace LevelEditor {
         }
 
         public void OnPointerClick(PointerEventData eventData) {
+            if(eventData.button != PointerEventData.InputButton.Left) {
+                return;
+            }
+
             if(LevelEditor.instance.HasBuildingBlockSelected()) {
                 LevelEditor.instance.AddToActionStack(this);
                 BuildingBlock currentlySelected = LevelEditor.instance.GetCurrentBuildingBlock();
