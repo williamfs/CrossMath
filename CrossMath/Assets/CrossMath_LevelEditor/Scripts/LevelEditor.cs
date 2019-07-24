@@ -8,6 +8,8 @@ using UnityEngine.EventSystems;
 
 namespace LevelEditor {
     public class LevelEditor : MonoBehaviour {
+
+        // Board Action class represents the state of one cell on the board.
         public class BoardAction {
             public int cellListPosition;
             public SerializableCell currentCellStatus;
@@ -34,23 +36,19 @@ namespace LevelEditor {
         [Header("Load")]
         public GameObject loadBoardPanel;
         public GameObject availableFilesParent;
-        public GameObject textPrefab;
+        public GameObject filenameTextPrefab;
 
         // Saving
         private const string km_preprendPath = "/Levels";
         // Caching Save
         private string m_cachedFilename;
 
-
-        // Loading
-
-        // Internal Variables
+        // Internal Variables to track board states
         private BuildingBlock m_currentlySelectedBuildingBlock;
         private List<CellScript> m_cellList;
         private Stack<BoardAction> m_actionStack;
 
         // Board Manipulation
-        private int m_cellSize = 75;
         private Vector3 previousFrameMousePosition;
 
         private void Awake() {
@@ -79,21 +77,30 @@ namespace LevelEditor {
             }
 
             if(Input.GetMouseButton(1) || Input.GetMouseButton(2)) {
-                ProcessGridPosition(Input.mousePosition - previousFrameMousePosition);
+                MoveGrid(Input.mousePosition - previousFrameMousePosition);
             }
 
             previousFrameMousePosition = Input.mousePosition;
         }
 
+        // -----------------------
+        // Board Manipulation
+        // -----------------------
+        #region BOARD MANIPULATION
         private void ChangeGridCellSize(Vector2 _variation) {
             GridLayoutGroup layoutGroup = gridObject.GetComponent<GridLayoutGroup>();
-            layoutGroup.cellSize = layoutGroup.cellSize + new Vector2(_variation.y, _variation.y);
+            layoutGroup.cellSize += new Vector2(_variation.y, _variation.y);
         }
 
-        private void ProcessGridPosition(Vector2 _deltaMovement) {
+        private void MoveGrid(Vector2 _deltaMovement) {
             gridObject.transform.Translate(_deltaMovement);
         }
+        #endregion
 
+        // -----------------------
+        // Building Block Selection
+        // -----------------------
+        #region BUILDING BLOCK SELECTION
         public void SelectBuildingBlock(BuildingBlock _selected) {
             m_currentlySelectedBuildingBlock = _selected;
             currentlySelectedBuildingBlock.AssignBuildingBlock(_selected, true);
@@ -107,20 +114,24 @@ namespace LevelEditor {
         public bool HasBuildingBlockSelected() {
             return (m_currentlySelectedBuildingBlock != null);
         }
+        #endregion
 
         // -----------------------
         // Board Generation
         // -----------------------
         #region BOARD GENERATION
 
+        // Function Referenced in the UI
         public void ShowGenerateBoardPanel() {
             generateBoardPanel.SetActive(true);
         }
 
+        // Function Referenced in the UI
         public void HideGenerateBoardPanel() {
             generateBoardPanel.SetActive(false);
         }
 
+        // Function Referenced in the UI
         public void GenerateEmptyBoard(InputField _inputField) {
             int boardSize = int.Parse(_inputField.textComponent.text);
             GenerateEmptyBoard(boardSize);
@@ -139,38 +150,19 @@ namespace LevelEditor {
                 m_cellList.Add(cell);
             }
         }
-
-        public void InitializeDependencies() {
-            m_cellList = new List<CellScript>();
-            m_actionStack = new Stack<BoardAction>();
-        }
-
-        public void GenerateBoard(SerializableBoard _board) {
-            InitializeDependencies();
-            GridLayoutGroup gridLayoutGroup = gridObject.GetComponent<GridLayoutGroup>();
-            gridLayoutGroup.constraintCount = _board.boardSize;
-
-            for(int i = 0; i < (_board.boardSize * _board.boardSize); i++) {
-                // Instantiating Cell
-                CellScript instantiatedCell = Instantiate(singleCellPrefab, gridObject.transform).GetComponent<CellScript>();
-                instantiatedCell.FetchDependencies();
-                instantiatedCell.CopyFrom(_board.serializableGrid[i]);
-                instantiatedCell.UpdateUI();
-                m_cellList.Add(instantiatedCell);
-            }
-        }
         #endregion BOARD GENERATION
 
         // -----------------------
         // Save Functions
         // -----------------------
-        #region SAVE AND LOAD
+        #region SAVE
 
-        public void PromptSavePanel() {
+        // Function Referenced in the UI
+        public void ShowSaveBoardPanel() {
             saveBoardPanel?.SetActive(true);
         }
 
-        public void CloseSavePanel() {
+        public void CloseSaveBoardPanel() {
             saveBoardPanel?.SetActive(false);
         }
 
@@ -192,7 +184,7 @@ namespace LevelEditor {
             }
         }
 
-        public void SavePuzzle(string _filename) {
+        private void SavePuzzle(string _filename) {
             SerializableBoard savedBoard = new SerializableBoard();
             List<SerializableCell> cellList = new List<SerializableCell>();
 
@@ -206,23 +198,7 @@ namespace LevelEditor {
             SaveFile(_filename, JsonUtility.ToJson(savedBoard));
         }
 
-        public SerializableCell GetSerializableCellFromCellScript(CellScript _cellScript) {
-            if (_cellScript.cellType == CellScript.ECellType.None && _cellScript.cellStatus == CellScript.ECellStatus.None) {
-                _cellScript.cellType = CellScript.ECellType.Unused;
-                _cellScript.cellStatus = CellScript.ECellStatus.Unused;
-            }
-
-            string content = "";
-            if (_cellScript.cellType == CellScript.ECellType.Number) {
-                content = _cellScript.intCellContent.ToString();
-            } else if (_cellScript.cellType == CellScript.ECellType.Operation) {
-                content = _cellScript.charCellContent.ToString();
-            }
-
-            return new SerializableCell(_cellScript.cellStatus.GetHashCode(), _cellScript.cellType.GetHashCode(), content);
-        }
-
-        public void SaveFile(string _filename, string _jsonFile) {
+        private void SaveFile(string _filename, string _jsonFile) {
             File.WriteAllText($"{Application.dataPath}{km_preprendPath}/{_filename}", _jsonFile);
             boardSavedPanel?.SetActive(true);
         }
@@ -243,23 +219,27 @@ namespace LevelEditor {
         public void DontOverrideSaveFile() {
             overrideFilePanel?.SetActive(false);
         }
+        #endregion
 
         // -----------------------
         // LOAD Functions
         // -----------------------
+        #region LOAD
         public void ShowLoadFilePanel() {
             loadBoardPanel?.SetActive(true);
 
             // Showing Available Files to Load...
             DestroyAllChildren(availableFilesParent.transform);
+
             // getting available files
             string[] filesAvailable = Directory.GetFiles($"{Application.dataPath}{km_preprendPath}");
             string[] validFiles = filesAvailable.Where(filename => {
                 return (filename.Contains(".json") && !filename.Contains(".meta"));
             }).ToArray();
 
+            // Showing on screen all files available to load
             foreach (string validFile in validFiles) {
-                Text filenameText = Instantiate(textPrefab, availableFilesParent.transform).GetComponent<Text>();
+                Text filenameText = Instantiate(filenameTextPrefab, availableFilesParent.transform).GetComponent<Text>();
                 filenameText.text = validFile.Split('/', '\\').Last();
             }
         }
@@ -287,12 +267,25 @@ namespace LevelEditor {
             GenerateBoard(_board);
         }
 
-        private void DestroyAllChildren(Transform _parent) {
-            for(int i = 0; i < _parent.childCount; i++) {
-                Destroy(_parent.GetChild(i).gameObject);
+        private void GenerateBoard(SerializableBoard _board) {
+            InitializeDependencies();
+            GridLayoutGroup gridLayoutGroup = gridObject.GetComponent<GridLayoutGroup>();
+            gridLayoutGroup.constraintCount = _board.boardSize;
+
+            for (int i = 0; i < (_board.boardSize * _board.boardSize); i++) {
+                // Instantiating Cells
+                CellScript instantiatedCell = Instantiate(singleCellPrefab, gridObject.transform).GetComponent<CellScript>();
+                instantiatedCell.FetchDependencies();
+                instantiatedCell.CopyFrom(_board.serializableGrid[i]);
+                instantiatedCell.UpdateUI();
+                m_cellList.Add(instantiatedCell);
             }
         }
         #endregion SAVE AND LOAD
+
+        // ------------------------
+        // Undo
+        // ------------------------
 
         #region UNDO
         public void AddToActionStack(CellScript _cell) {
@@ -308,6 +301,8 @@ namespace LevelEditor {
             m_actionStack.Push(boardAction);
         }
 
+
+        // Function Referenced by the UI
         public void Undo() {
             if(m_actionStack.Count == 0) {
                 return;
@@ -318,5 +313,37 @@ namespace LevelEditor {
             m_cellList[lastAction.cellListPosition].UpdateUI();
         }
         #endregion UNDO
+
+        // ------------------------
+        // Auxiliary Functions
+        // ------------------------
+        #region AUXILIARY
+        private void DestroyAllChildren(Transform _parent) {
+            for (int i = 0; i < _parent.childCount; i++) {
+                Destroy(_parent.GetChild(i).gameObject);
+            }
+        }
+
+        public void InitializeDependencies() {
+            m_cellList = new List<CellScript>();
+            m_actionStack = new Stack<BoardAction>();
+        }
+
+        public SerializableCell GetSerializableCellFromCellScript(CellScript _cellScript) {
+            if (_cellScript.cellType == CellScript.ECellType.None && _cellScript.cellStatus == CellScript.ECellStatus.None) {
+                _cellScript.cellType = CellScript.ECellType.Unused;
+                _cellScript.cellStatus = CellScript.ECellStatus.Unused;
+            }
+
+            string content = "";
+            if (_cellScript.cellType == CellScript.ECellType.Number) {
+                content = _cellScript.intCellContent.ToString();
+            } else if (_cellScript.cellType == CellScript.ECellType.Operation) {
+                content = _cellScript.charCellContent.ToString();
+            }
+
+            return new SerializableCell(_cellScript.cellStatus.GetHashCode(), _cellScript.cellType.GetHashCode(), content);
+        }
+        #endregion
     }
 }

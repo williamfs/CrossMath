@@ -192,7 +192,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1765619486}
-        m_MethodName: PromptSavePanel
+        m_MethodName: ShowSaveBoardPanel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2449,7 +2449,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &459876019
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4720,7 +4720,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -7.7999268, y: 60.100006}
+  m_AnchoredPosition: {x: -7.7998962, y: 60.100006}
   m_SizeDelta: {x: -525.5, y: -320.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1051996171
@@ -4925,7 +4925,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 162.33032, y: -85}
+  m_AnchoredPosition: {x: 161.39603, y: -85}
   m_SizeDelta: {x: 160, y: 60}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1085177750
@@ -5696,7 +5696,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 337.33032, y: -85}
+  m_AnchoredPosition: {x: 336.39603, y: -85}
   m_SizeDelta: {x: 160, y: 60}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1300684595
@@ -6615,7 +6615,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1765619486}
-        m_MethodName: CloseSavePanel
+        m_MethodName: CloseSaveBoardPanel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7431,7 +7431,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -7.799988, y: 60.1}
+  m_AnchoredPosition: {x: -7.8000183, y: 60.100006}
   m_SizeDelta: {x: -525.5, y: -320.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1645680912
@@ -7889,7 +7889,7 @@ MonoBehaviour:
   overrideFilePanel: {fileID: 459876018}
   loadBoardPanel: {fileID: 85724289}
   availableFilesParent: {fileID: 1307958913}
-  textPrefab: {fileID: 7875804616861976074, guid: 4eeb49986dd91654fa5ebd8728e0f8ab,
+  filenameTextPrefab: {fileID: 7875804616861976074, guid: 4eeb49986dd91654fa5ebd8728e0f8ab,
     type: 3}
 --- !u!1 &1817112941
 GameObject:
@@ -8410,7 +8410,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1954131308
 RectTransform:
   m_ObjectHideFlags: 0
