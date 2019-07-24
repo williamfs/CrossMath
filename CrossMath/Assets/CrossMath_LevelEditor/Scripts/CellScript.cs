@@ -41,6 +41,7 @@ namespace LevelEditor {
             }
         }
 
+        // Public information of the Cell
         public ECellType cellType;
         public ECellStatus cellStatus;
         public int intCellContent;
@@ -50,6 +51,10 @@ namespace LevelEditor {
         private Image m_imageReference;
         private Text m_textReference;
 
+        // --------------------
+        // Initialization
+        // --------------------
+        #region Initialization
         public void InitializeEmptyCell() {
             cellType = ECellType.None;
             cellStatus = ECellStatus.None;
@@ -61,7 +66,12 @@ namespace LevelEditor {
             m_textReference = GetComponentInChildren<Text>();
             m_textReference.text = "";
         }
+        #endregion
 
+        // ----------------------
+        // Hover Handling
+        // ----------------------
+        #region HOVER HANDLING
         public void OnPointerEnter(PointerEventData pointerEventData) {
             m_imageReference.color = LevelEditor.instance.colorConfiguration.mouseHoverColor;
         }
@@ -69,41 +79,14 @@ namespace LevelEditor {
         public void OnPointerExit(PointerEventData pointerEventData) {
             m_imageReference.color = m_currentColor;
         }
+        #endregion
 
-        public void UpdateUI() {
-            if(cellType == ECellType.Number) {
-                m_textReference.text = intCellContent.ToString();
-            } else if(cellType == ECellType.Operation) {
-                m_textReference.text = charCellContent.ToString();
-            } else {
-                m_textReference.text = "";
-            }
-
-            m_imageReference.color = m_currentColor;
-        }
-
-        public void CopyFrom(SerializableCell _cell) {
-           
-            cellStatus = (ECellStatus)_cell.cellStatus;
-            cellType = (ECellType)_cell.cellType;
-
-            if (cellType == CellScript.ECellType.Number) {
-                intCellContent = int.Parse(_cell.cellContent);
-                m_currentColor = LevelEditor.instance.colorConfiguration.numberBlockColor;
-            } else if (cellType == CellScript.ECellType.Operation) {
-                charCellContent = _cell.cellContent.ToCharArray()[0];
-                CurrentColor = LevelEditor.instance.colorConfiguration.operationBlockColor;
-            } else {
-                CurrentColor = LevelEditor.instance.colorConfiguration.unusedBlockColor;
-            }
-
-            if (cellStatus == CellScript.ECellStatus.Hidden) {
-                PreviousColor = CurrentColor;
-                CurrentColor = LevelEditor.instance.colorConfiguration.hiddenBlockColor;
-            }
-        }
-
+        // ----------------------
+        // Data Assignment
+        // ----------------------
+        #region Assigning Data to Cell
         public void OnPointerClick(PointerEventData eventData) {
+            // Do nothing if user didn't click with the left mouse button
             if(eventData.button != PointerEventData.InputButton.Left) {
                 return;
             }
@@ -115,6 +98,9 @@ namespace LevelEditor {
             }
         }
 
+        // [TO DO]
+        // parameter bool _isFeedback possibly indicates that function has two different behaviors
+        // fix that (don't have bool parameters)
         public void AssignBuildingBlock(BuildingBlock _block, bool _isFeedback) {
             switch (_block.buildingBlockType) {
                 case BuildingBlock.EBuildingBlockType.Number:
@@ -172,5 +158,44 @@ namespace LevelEditor {
 
             m_imageReference.color = m_currentColor;
         }
+        #endregion
+
+        // ----------------------
+        // Auxiliaries
+        // ----------------------
+        #region Auxiliaries
+        public void UpdateUI() {
+            if (cellType == ECellType.Number) {
+                m_textReference.text = intCellContent.ToString();
+            } else if (cellType == ECellType.Operation) {
+                m_textReference.text = charCellContent.ToString();
+            } else {
+                m_textReference.text = "";
+            }
+
+            m_imageReference.color = m_currentColor;
+        }
+
+        public void CopyFrom(SerializableCell _cell) {
+
+            cellStatus = (ECellStatus)_cell.cellStatus;
+            cellType = (ECellType)_cell.cellType;
+
+            if (cellType == CellScript.ECellType.Number) {
+                intCellContent = int.Parse(_cell.cellContent);
+                m_currentColor = LevelEditor.instance.colorConfiguration.numberBlockColor;
+            } else if (cellType == CellScript.ECellType.Operation) {
+                charCellContent = _cell.cellContent.ToCharArray()[0];
+                CurrentColor = LevelEditor.instance.colorConfiguration.operationBlockColor;
+            } else {
+                CurrentColor = LevelEditor.instance.colorConfiguration.unusedBlockColor;
+            }
+
+            if (cellStatus == CellScript.ECellStatus.Hidden) {
+                PreviousColor = CurrentColor;
+                CurrentColor = LevelEditor.instance.colorConfiguration.hiddenBlockColor;
+            }
+        }
+        #endregion
     }
 }
