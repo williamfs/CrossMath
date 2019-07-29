@@ -255,9 +255,10 @@ namespace LevelEditor {
                 fileName += ".json";
             }
 
-            string filePath = $"{Application.dataPath}{km_preprendPath}/{fileName}";
-            string jsonData = File.ReadAllText(filePath);
-            SerializableBoard board = JsonUtility.FromJson<SerializableBoard>(jsonData);
+            string filePath = $"{km_preprendPath}/{fileName}";
+            // string jsonData = File.ReadAllText(filePath);
+            // SerializableBoard board = JsonUtility.FromJson<SerializableBoard>(jsonData);
+            SerializableBoard board = SerializeUtility.LoardBoardFromFile(filePath);
             DeserializeBoard(board);
             HideLoadFilePanel();
         }
