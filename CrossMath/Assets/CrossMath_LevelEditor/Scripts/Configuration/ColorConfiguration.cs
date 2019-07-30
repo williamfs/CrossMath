@@ -17,5 +17,6 @@ namespace LevelEditor {
         [Header("Gameplay Colors")]
         public Color positiveFeedbackColor = Color.green;
         public Color negativeFeedbackColor = Color.red;
+        public Color hintColor = Color.cyan;
     }
 }

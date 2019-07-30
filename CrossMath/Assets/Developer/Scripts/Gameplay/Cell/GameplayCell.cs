@@ -73,4 +73,9 @@ public class GameplayCell : MonoBehaviour {
     public bool IsEqual(GameplayCell _other) {
         return (m_textReference.text == _other.TextContent);
     }
+
+    public void ShowCellWithColor(Color _color) {
+        m_textReference.enabled = true;
+        m_imageReference.color = _color;
+    }
 }

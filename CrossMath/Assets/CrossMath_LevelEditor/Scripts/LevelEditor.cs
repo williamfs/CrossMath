@@ -40,6 +40,11 @@ namespace LevelEditor {
 
         // Saving
         private const string km_preprendPath = "/Levels";
+        public static string PrependPath {
+            get {
+                return km_preprendPath;
+            }
+        }
         // Caching Save
         private string m_cachedFilename;
 
@@ -230,17 +235,12 @@ namespace LevelEditor {
 
             // Showing Available Files to Load...
             DestroyAllChildren(availableFilesParent.transform);
-
-            // getting available files
-            string[] filesAvailable = Directory.GetFiles($"{Application.dataPath}{km_preprendPath}");
-            string[] validFiles = filesAvailable.Where(filename => {
-                return (filename.Contains(".json") && !filename.Contains(".meta"));
-            }).ToArray();
+            string[] validFiles = SerializeUtility.GetAllLevels();
 
             // Showing on screen all files available to load
             foreach (string validFile in validFiles) {
                 Text filenameText = Instantiate(filenameTextPrefab, availableFilesParent.transform).GetComponent<Text>();
-                filenameText.text = validFile.Split('/', '\\').Last();
+                filenameText.text = validFile;
             }
         }
 
@@ -255,9 +255,7 @@ namespace LevelEditor {
                 fileName += ".json";
             }
 
-            string filePath = $"{km_preprendPath}/{fileName}";
-            // string jsonData = File.ReadAllText(filePath);
-            // SerializableBoard board = JsonUtility.FromJson<SerializableBoard>(jsonData);
+            string filePath = $"{fileName}";
             SerializableBoard board = SerializeUtility.LoardBoardFromFile(filePath);
             DeserializeBoard(board);
             HideLoadFilePanel();

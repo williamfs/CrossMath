@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 public class CellDrag : MonoBehaviour, IDragHandler, IEndDragHandler {
 
     public delegate void FeedbackOnCell(GameplayCell _cell, bool _isPositive);
-    public delegate void ActOnCell(GameplayCell _cell);
+    public delegate void ActOnCell(GameplayCell _answerCell, GameplayCell _questionCell);
     public event FeedbackOnCell OnInteractedWithCell;
     public event ActOnCell OnCellWasMatched;
 
@@ -45,7 +45,7 @@ public class CellDrag : MonoBehaviour, IDragHandler, IEndDragHandler {
                 Destroy(thisCell.gameObject);
 
                 OnInteractedWithCell?.Invoke(otherCell, true);
-                OnCellWasMatched?.Invoke(thisCell);
+                OnCellWasMatched?.Invoke(thisCell, otherCell);
             } else {
                 OnInteractedWithCell?.Invoke(otherCell, false);
             }

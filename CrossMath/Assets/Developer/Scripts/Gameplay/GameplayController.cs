@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class GameplayController : MonoBehaviour {
 
+    public GameplayConfiguration gameplayConfiguration;
+
     [Header("Gameplay Initialization")]
     public GameObject gameplayCellPrefab;
 
@@ -12,6 +14,9 @@ public class GameplayController : MonoBehaviour {
     public GameObject solutionBank;
     public GameObject gridPanel;
     public LevelEditor.ColorConfiguration colorConfiguration;
+
+    [Header("Pause Game")]
+    public GameObject pausePanel;
 
     [Header("End of Game")]
     public GameObject gameOverPanel;
@@ -30,14 +35,21 @@ public class GameplayController : MonoBehaviour {
 
     // testing purposes - in the final product the level to load should be variable and passed by another scene or another script
     // there is a prepend path on Level Editor - keep this in mind
-    public const string km_levelToLoad = "Levels/Level 3.json";
+    public const string km_levelToLoad = "Level 3.json";
+    private string m_levelToLoad;
 
     // [TO DO]
     // time remaining is defaulted to 180s
     // in the future it should be in the level editor!
-    private readonly float m_timeToComplete = 180.0f;
+    private float m_timeRemaining;
 
     private void Start() {
+        // Seeing which level needs to be loaded
+        // [TO DO]
+        // This is currently being done with PlayerPrefs, maybe there is a better way?!
+        // i.e. Having an object that persists data between scenes
+        m_levelToLoad = PlayerPrefs.GetString(SerializeUtility.LEVEL_TO_LOAD) ?? km_levelToLoad;
+
         m_feedbackUIReference = FindObjectOfType<FeedbackUI>();
 
         m_unusedCells = new List<GameplayCell>();
@@ -53,24 +65,26 @@ public class GameplayController : MonoBehaviour {
 
         // Deactivating Panels
         gameOverPanel.SetActive(false);
+        pausePanel.SetActive(false);
 
         // Starting Timer
-        StartCoroutine(TimerRoutine(m_timeToComplete));
-        m_feedbackUIReference.UpdateTimer(Mathf.RoundToInt(m_timeToComplete));
+        m_timeRemaining = gameplayConfiguration.baseTime;
+        StartCoroutine(TimerRoutine());
+        m_feedbackUIReference.UpdateTimer(Mathf.RoundToInt(m_timeRemaining));
     }
 
-    private IEnumerator TimerRoutine(float _timeRemaining) {
-        while (_timeRemaining > 0) {
+    private IEnumerator TimerRoutine() {
+        while (m_timeRemaining > 0) {
             yield return new WaitForSeconds(1.0f);
-            _timeRemaining -= 1.0f;
-            m_feedbackUIReference.UpdateTimer(Mathf.RoundToInt(_timeRemaining));
+            m_timeRemaining -= 1.0f;
+            m_feedbackUIReference.UpdateTimer(Mathf.RoundToInt(m_timeRemaining));
         }
 
         ShowGameOverPanel("You Lose!");
     }
 
     private void InitializeLevel() {
-        LevelEditor.SerializableBoard boardToLoad = SerializeUtility.LoardBoardFromFile(km_levelToLoad);
+        LevelEditor.SerializableBoard boardToLoad = SerializeUtility.LoardBoardFromFile(m_levelToLoad);
         m_boardGridLayoutPanel.constraintCount = boardToLoad.boardSize;
 
         // Instantiating all cells
@@ -117,9 +131,14 @@ public class GameplayController : MonoBehaviour {
     private void ShuffleAnswers() {
         // [TO DO]
         // Shuffle steps maybe could be a variable?
+        int childCount = solutionBank.transform.childCount;
+
+        if (childCount == 0) {
+            return;
+        }
 
         for(int i = 0; i < 100; i++) {
-            int randomChild = Random.Range(0, solutionBank.transform.childCount);
+            int randomChild = Random.Range(0, childCount);
             solutionBank.transform.GetChild(randomChild).SetAsFirstSibling();
         }
     }
@@ -132,6 +151,12 @@ public class GameplayController : MonoBehaviour {
     private void GiveFeedbackOnCell(GameplayCell _cell, bool _isPositive) {
         Color feedbackColor = _isPositive ? colorConfiguration.positiveFeedbackColor : colorConfiguration.negativeFeedbackColor;
         
+        if(_isPositive) {
+            m_timeRemaining += gameplayConfiguration.additionalTimeCorrectAnswer;
+        } else {
+            m_timeRemaining -= gameplayConfiguration.timePenaltyWrongAnswer;
+        }
+
         // [TO DO]
         // Play a positive or negative feedback sound here!
         // Play a fancy particle effect here also
@@ -152,8 +177,10 @@ public class GameplayController : MonoBehaviour {
         }
     }
 
-    private void RemoveCellFromAnswers(GameplayCell _cell) {
-        m_answerCells.Remove(_cell);
+    private void RemoveCellFromAnswers(GameplayCell _answerCell, GameplayCell _questionCell) {
+        m_answerCells.Remove(_answerCell);
+        m_questionCells.Remove(_questionCell);
+
         m_feedbackUIReference.UpdateRemainingUIText(m_answerCells.Count);
 
         if(m_answerCells.Count == 0) {
@@ -164,5 +191,39 @@ public class GameplayController : MonoBehaviour {
     private void ShowGameOverPanel(string _gameOverText) {
         gameOverText.text = _gameOverText;
         gameOverPanel.SetActive(true);
+    }
+
+    // ====================================
+    // User Interface Functions
+    // ====================================
+    public void PauseGame() {
+        pausePanel.SetActive(true);
+        Time.timeScale = 0f;
+    }
+
+    public void ResumeGame() {
+        pausePanel.SetActive(false);
+        Time.timeScale = 1f;
+    }
+
+    public void GoToMainMenu() {
+        Time.timeScale = 1f;
+        LevelManager.instance.LoadLevel(0);
+    }
+
+    public void PlayAgain() {
+        Time.timeScale = 1f;
+        LevelManager.instance.ReloadLevel();
+    }
+
+    public void ShowHint() {
+        m_timeRemaining -= gameplayConfiguration.hintTimePenalty;
+        StartCoroutine(HintRoutine(m_questionCells.RandomOrDefault()));
+    }
+
+    private IEnumerator HintRoutine(GameplayCell _hintCell) {
+        _hintCell.ShowCellWithColor(colorConfiguration.hintColor);
+        yield return new WaitForSeconds(gameplayConfiguration.hintAvailableTime);
+        _hintCell.MarkAsQuestion(colorConfiguration.hiddenBlockColor);
     }
 }
