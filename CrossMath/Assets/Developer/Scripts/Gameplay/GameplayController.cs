@@ -13,6 +13,10 @@ public class GameplayController : MonoBehaviour {
     public GameObject gridPanel;
     public LevelEditor.ColorConfiguration colorConfiguration;
 
+    [Header("End of Game")]
+    public GameObject gameOverPanel;
+    public Text gameOverText;
+
     // Internal Gameplay Configuration variables
     private GridLayoutGroup m_boardGridLayoutPanel;
     private GridLayoutGroup m_answerBankGridLayout;
@@ -28,6 +32,11 @@ public class GameplayController : MonoBehaviour {
     // there is a prepend path on Level Editor - keep this in mind
     public const string km_levelToLoad = "Levels/Level 3.json";
 
+    // [TO DO]
+    // time remaining is defaulted to 180s
+    // in the future it should be in the level editor!
+    private readonly float m_timeToComplete = 180.0f;
+
     private void Start() {
         m_feedbackUIReference = FindObjectOfType<FeedbackUI>();
 
@@ -41,6 +50,23 @@ public class GameplayController : MonoBehaviour {
         InitializeLevel();
         RemoveUnusedCells(m_unusedCells);
         ShuffleAnswers();
+
+        // Deactivating Panels
+        gameOverPanel.SetActive(false);
+
+        // Starting Timer
+        StartCoroutine(TimerRoutine(m_timeToComplete));
+        m_feedbackUIReference.UpdateTimer(Mathf.RoundToInt(m_timeToComplete));
+    }
+
+    private IEnumerator TimerRoutine(float _timeRemaining) {
+        while (_timeRemaining > 0) {
+            yield return new WaitForSeconds(1.0f);
+            _timeRemaining -= 1.0f;
+            m_feedbackUIReference.UpdateTimer(Mathf.RoundToInt(_timeRemaining));
+        }
+
+        ShowGameOverPanel("You Lose!");
     }
 
     private void InitializeLevel() {
@@ -118,7 +144,7 @@ public class GameplayController : MonoBehaviour {
         // some magic numbers here, these could be variables
 
         Color originalCellColor = _cell.CellColor;
-        for(int i = 0; i < 2; i++) {
+        for(int i = 0; i < 3; i++) {
             _cell.CellColor = _color;
             yield return new WaitForSeconds(0.1f);
             _cell.CellColor = originalCellColor;
@@ -131,7 +157,12 @@ public class GameplayController : MonoBehaviour {
         m_feedbackUIReference.UpdateRemainingUIText(m_answerCells.Count);
 
         if(m_answerCells.Count == 0) {
-            Debug.Log("Player Won!");
+            ShowGameOverPanel("You Won!");
         }
+    }
+
+    private void ShowGameOverPanel(string _gameOverText) {
+        gameOverText.text = _gameOverText;
+        gameOverPanel.SetActive(true);
     }
 }
