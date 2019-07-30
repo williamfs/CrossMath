@@ -13,5 +13,9 @@ namespace LevelEditor {
         public Color operationBlockColor = Color.white;
         public Color hiddenBlockColor = Color.white;
         public Color unusedBlockColor = Color.red;
+
+        [Header("Gameplay Colors")]
+        public Color positiveFeedbackColor = Color.green;
+        public Color negativeFeedbackColor = Color.red;
     }
 }

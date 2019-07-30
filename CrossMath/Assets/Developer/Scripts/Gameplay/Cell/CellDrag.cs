@@ -6,6 +6,11 @@ using UnityEngine.EventSystems;
 
 public class CellDrag : MonoBehaviour, IDragHandler, IEndDragHandler {
 
+    public delegate void FeedbackOnCell(GameplayCell _cell, bool _isPositive);
+    public delegate void ActOnCell(GameplayCell _cell);
+    public event FeedbackOnCell OnInteractedWithCell;
+    public event ActOnCell OnCellWasMatched;
+
     private Vector3 m_originalPosition;
 
     void Start() {
@@ -20,27 +25,29 @@ public class CellDrag : MonoBehaviour, IDragHandler, IEndDragHandler {
 
     public void OnEndDrag(PointerEventData eventData) {
         // Raycasting to see which cells should be dealt with
-        List<RaycastResult> results = new List<RaycastResult>();
-        List<GameplayCell> gameplayCells = new List<GameplayCell>();
-        GraphicRaycaster caster = FindObjectOfType<Canvas>().GetComponent<GraphicRaycaster>();
-        caster.Raycast(eventData, results);
+        List<RaycastResult> raycastResults = new List<RaycastResult>();
+        GameplayCell thisCell = GetComponent<GameplayCell>();
+        GameplayCell otherCell = null;
+        GraphicRaycaster graphicsRaycaster = FindObjectOfType<Canvas>().GetComponent<GraphicRaycaster>();
+        graphicsRaycaster.Raycast(eventData, raycastResults);
 
         // Getting the gameplay cells from the results
-        foreach (RaycastResult result in results) {
+        foreach (RaycastResult result in raycastResults) {
             GameplayCell cell = result.gameObject.GetComponent<GameplayCell>();
-            if (cell != null) {
-                gameplayCells.Add(cell);
+            if (cell != null && cell != thisCell) {
+                otherCell = cell;
             }
         }
 
-        if (gameplayCells.Count == 2) {
-            GameplayCell thisCell = GetComponent<GameplayCell>();
-            gameplayCells.Remove(thisCell);
-            GameplayCell otherCell = gameplayCells[0];
-
+        if (otherCell != null) {
             if(thisCell.IsEqual(otherCell)) {
                 otherCell.MarkAsAnswered(thisCell);
                 Destroy(thisCell.gameObject);
+
+                OnInteractedWithCell?.Invoke(otherCell, true);
+                OnCellWasMatched?.Invoke(thisCell);
+            } else {
+                OnInteractedWithCell?.Invoke(otherCell, false);
             }
         }
 

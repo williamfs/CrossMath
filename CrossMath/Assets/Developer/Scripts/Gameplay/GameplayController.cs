@@ -11,7 +11,6 @@ public class GameplayController : MonoBehaviour {
     [Header("Gameplay Configuration")]
     public GameObject solutionBank;
     public GameObject gridPanel;
-    public GameObject upperPanel;
     public LevelEditor.ColorConfiguration colorConfiguration;
 
     // Internal Gameplay Configuration variables
@@ -22,11 +21,16 @@ public class GameplayController : MonoBehaviour {
     private List<GameplayCell> m_answerCells;
     private List<GameplayCell> m_gameplayCells;
 
+    // References
+    private FeedbackUI m_feedbackUIReference;
+
     // testing purposes - in the final product the level to load should be variable and passed by another scene or another script
     // there is a prepend path on Level Editor - keep this in mind
     public const string km_levelToLoad = "Levels/Level 3.json";
 
     private void Start() {
+        m_feedbackUIReference = FindObjectOfType<FeedbackUI>();
+
         m_unusedCells = new List<GameplayCell>();
         m_questionCells = new List<GameplayCell>();
         m_answerCells = new List<GameplayCell>();
@@ -36,9 +40,10 @@ public class GameplayController : MonoBehaviour {
         m_answerBankGridLayout = solutionBank.GetComponent<GridLayoutGroup>();
         InitializeLevel();
         RemoveUnusedCells(m_unusedCells);
+        ShuffleAnswers();
     }
 
-    void InitializeLevel() {
+    private void InitializeLevel() {
         LevelEditor.SerializableBoard boardToLoad = SerializeUtility.LoardBoardFromFile(km_levelToLoad);
         m_boardGridLayoutPanel.constraintCount = boardToLoad.boardSize;
 
@@ -59,7 +64,12 @@ public class GameplayController : MonoBehaviour {
                 GameplayCell answerCell = Instantiate(gameplayCellPrefab, solutionBank.transform).GetComponent<GameplayCell>();
                 answerCell.FetchDependencies();
                 answerCell.Assign(cell, colorConfiguration);
-                answerCell.gameObject.AddComponent<CellDrag>();
+
+                // Adding the Drag Component and stablishing all the actions necessary
+                CellDrag answerCellDragComponent = answerCell.gameObject.AddComponent<CellDrag>();
+                answerCellDragComponent.OnInteractedWithCell += GiveFeedbackOnCell;
+                answerCellDragComponent.OnCellWasMatched += RemoveCellFromAnswers;
+
                 answerCell.MarkAsAnswer();
                 m_answerCells.Add(answerCell);
             } else if(cell.cellStatus == (int)LevelEditor.CellScript.ECellStatus.Visible) {
@@ -67,16 +77,61 @@ public class GameplayController : MonoBehaviour {
                 m_gameplayCells.Add(gameplayCell);
             }
         }
+
+        m_feedbackUIReference.UpdateRemainingUIText(m_answerCells.Count);
     }
 
-    void RemoveUnusedCells(List<GameplayCell> _unusedCells) {
+    private void RemoveUnusedCells(List<GameplayCell> _unusedCells) {
         foreach(GameplayCell unusedCell in _unusedCells) {
             unusedCell.DeactivateCell();
+        }
+    }
+
+    // Select a random children on the Answer Bank and set it as the first, repeat 100 times
+    private void ShuffleAnswers() {
+        // [TO DO]
+        // Shuffle steps maybe could be a variable?
+
+        for(int i = 0; i < 100; i++) {
+            int randomChild = Random.Range(0, solutionBank.transform.childCount);
+            solutionBank.transform.GetChild(randomChild).SetAsFirstSibling();
         }
     }
 
     public void RefreshAnswersGridLayout() {
         m_answerBankGridLayout.enabled = false;
         m_answerBankGridLayout.enabled = true;
+    }
+
+    private void GiveFeedbackOnCell(GameplayCell _cell, bool _isPositive) {
+        Color feedbackColor = _isPositive ? colorConfiguration.positiveFeedbackColor : colorConfiguration.negativeFeedbackColor;
+        
+        // [TO DO]
+        // Play a positive or negative feedback sound here!
+        // Play a fancy particle effect here also
+
+        StartCoroutine(GiveFeedbackOnCellRoutine(_cell, feedbackColor));
+    }
+
+    private IEnumerator GiveFeedbackOnCellRoutine(GameplayCell _cell, Color _color) {
+        // [TO DO]
+        // some magic numbers here, these could be variables
+
+        Color originalCellColor = _cell.CellColor;
+        for(int i = 0; i < 2; i++) {
+            _cell.CellColor = _color;
+            yield return new WaitForSeconds(0.1f);
+            _cell.CellColor = originalCellColor;
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+
+    private void RemoveCellFromAnswers(GameplayCell _cell) {
+        m_answerCells.Remove(_cell);
+        m_feedbackUIReference.UpdateRemainingUIText(m_answerCells.Count);
+
+        if(m_answerCells.Count == 0) {
+            Debug.Log("Player Won!");
+        }
     }
 }

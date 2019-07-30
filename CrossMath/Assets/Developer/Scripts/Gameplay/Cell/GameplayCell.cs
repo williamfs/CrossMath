@@ -18,7 +18,11 @@ public class GameplayCell : MonoBehaviour {
         get {
             return m_imageReference.color;
         }
+        set {
+            m_imageReference.color = value;
+        }
     }
+
     private Text m_textReference;
     public string TextContent {
         get {
