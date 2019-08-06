@@ -39,7 +39,7 @@ public class CellDrag : MonoBehaviour, IDragHandler, IEndDragHandler {
             }
         }
 
-        if (otherCell != null) {
+        if (otherCell != null && otherCell.IsQuestionCell()) {
             if(thisCell.IsEqual(otherCell)) {
                 otherCell.MarkAsAnswered(thisCell);
                 Destroy(thisCell.gameObject);

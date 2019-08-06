@@ -78,4 +78,8 @@ public class GameplayCell : MonoBehaviour {
         m_textReference.enabled = true;
         m_imageReference.color = _color;
     }
+
+    public bool IsQuestionCell() {
+        return cellType == ECellType.Question;
+    }
 }
