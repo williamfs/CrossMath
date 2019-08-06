@@ -153,8 +153,10 @@ public class GameplayController : MonoBehaviour {
         
         if(_isPositive) {
             m_timeRemaining += gameplayConfiguration.additionalTimeCorrectAnswer;
+            m_feedbackUIReference.ShowVisualFeedbackText($"+{gameplayConfiguration.additionalTimeCorrectAnswer}", colorConfiguration.positiveFeedbackColor);
         } else {
             m_timeRemaining -= gameplayConfiguration.timePenaltyWrongAnswer;
+            m_feedbackUIReference.ShowVisualFeedbackText($"-{gameplayConfiguration.timePenaltyWrongAnswer}", colorConfiguration.negativeFeedbackColor);
         }
 
         // [TO DO]
