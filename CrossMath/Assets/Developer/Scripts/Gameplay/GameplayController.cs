@@ -5,7 +5,9 @@ using UnityEngine.UI;
 
 public class GameplayController : MonoBehaviour {
 
+    [Header("Basic Configuration")]
     public GameplayConfiguration gameplayConfiguration;
+    public SoundConfiguration soundConfiguration;
 
     [Header("Gameplay Initialization")]
     public GameObject gameplayCellPrefab;
@@ -32,6 +34,7 @@ public class GameplayController : MonoBehaviour {
 
     // References
     private FeedbackUI m_feedbackUIReference;
+    private SoundManager m_soundManagerReference;
 
     // testing purposes - in the final product the level to load should be variable and passed by another scene or another script
     // there is a prepend path on Level Editor - keep this in mind
@@ -51,6 +54,7 @@ public class GameplayController : MonoBehaviour {
         m_levelToLoad = PlayerPrefs.GetString(SerializeUtility.LEVEL_TO_LOAD) ?? km_levelToLoad;
 
         m_feedbackUIReference = FindObjectOfType<FeedbackUI>();
+        m_soundManagerReference = FindObjectOfType<SoundManager>();
 
         m_unusedCells = new List<GameplayCell>();
         m_questionCells = new List<GameplayCell>();
@@ -80,6 +84,7 @@ public class GameplayController : MonoBehaviour {
             m_feedbackUIReference.UpdateTimer(Mathf.RoundToInt(m_timeRemaining));
         }
 
+        // [TO DO] Maybe the "You Lose" text could be a const variable
         ShowGameOverPanel("You Lose!");
     }
 
@@ -154,14 +159,15 @@ public class GameplayController : MonoBehaviour {
         if(_isPositive) {
             m_timeRemaining += gameplayConfiguration.additionalTimeCorrectAnswer;
             m_feedbackUIReference.ShowVisualFeedbackText($"+{gameplayConfiguration.additionalTimeCorrectAnswer}", colorConfiguration.positiveFeedbackColor);
+            m_soundManagerReference?.PlaySoundEffect(soundConfiguration?.positiveFeedbackClip);
+            
+            // [TO DO]
+            // Play a fancy particle effect here also
         } else {
             m_timeRemaining -= gameplayConfiguration.timePenaltyWrongAnswer;
             m_feedbackUIReference.ShowVisualFeedbackText($"-{gameplayConfiguration.timePenaltyWrongAnswer}", colorConfiguration.negativeFeedbackColor);
+            m_soundManagerReference?.PlaySoundEffect(soundConfiguration?.negativeFeedbackClip);
         }
-
-        // [TO DO]
-        // Play a positive or negative feedback sound here!
-        // Play a fancy particle effect here also
 
         StartCoroutine(GiveFeedbackOnCellRoutine(_cell, feedbackColor));
     }
@@ -186,6 +192,7 @@ public class GameplayController : MonoBehaviour {
         m_feedbackUIReference.UpdateRemainingUIText(m_answerCells.Count);
 
         if(m_answerCells.Count == 0) {
+            // [TO DO] Maybe the "You Won" text could be a const variable
             ShowGameOverPanel("You Won!");
         }
     }
